@@ -13,6 +13,10 @@ Board::Board(int width, int height) {
 	xOffset = (windowSize.x / 2) - (w * cellSize / 2);
 	yOffset = (windowSize.y / 2) - (h * cellSize / 2);
 
+	nextCellXOffset = 9 * cellSize;
+	nextCellYOffset = 6 * cellSize;
+
+	nextGroup = new Group(shapes[rand() % 7]);
 	spawnGroup();
 }
 
@@ -23,8 +27,9 @@ void Board::render(sf::RenderWindow &window) {
 		for (int y = 0; y < h; y++) {
 			rect.setFillColor(sf::Color::White);
 			for (int i = 0; i < cells.size(); i++) {
-				if (cells[i].x == x && cells[i].y == y) {
-					if (cells[i].color == Colors::CYAN) {
+				if (cells[i].x == x && cells[i].y == y) {	// already fallen
+					setColor(cells[i].color);
+					/*if (cells[i].color == Colors::CYAN) {
 						rect.setFillColor(sf::Color(72, 232, 232));
 					}
 					else if (cells[i].color == Colors::BLUE) {
@@ -44,13 +49,14 @@ void Board::render(sf::RenderWindow &window) {
 					}
 					else if (cells[i].color == Colors::RED) {
 						rect.setFillColor(sf::Color(214, 85, 62));
-					}
+					}*/
 				}
 			}
 			for (int i = 0; i < 4; i++) {
 				//std::cout << currentGroup->groupCells[j].y << std::endl;
 				if (currentGroup->groupCells[i].x == x && currentGroup->groupCells[i].y == y) {
-					if (currentGroup->groupCells[i].color == Colors::CYAN) {
+					setColor(currentGroup->groupCells[i].color);
+					/*if (currentGroup->groupCells[i].color == Colors::CYAN) {
 						rect.setFillColor(sf::Color(72, 232, 232));
 					}
 					else if (currentGroup->groupCells[i].color == Colors::BLUE) {
@@ -70,12 +76,18 @@ void Board::render(sf::RenderWindow &window) {
 					}
 					else if (currentGroup->groupCells[i].color == Colors::RED) {
 						rect.setFillColor(sf::Color(214, 85, 62));
-					}
+					}*/
 				}
 			}
 			rect.setPosition(sf::Vector2f(x*cellSize+1 + xOffset, y*cellSize+1 + yOffset));
 			window.draw(rect);
 		}
+	}
+
+	for (int i = 0; i < 4; i++) { // TODO: better centering
+		setColor(nextGroup->groupCells[i].color);
+		rect.setPosition(sf::Vector2f(nextGroup->groupCells[i].x * cellSize + xOffset + 1 + nextCellXOffset, nextGroup->groupCells[i].y * cellSize + yOffset + 1 + nextCellYOffset));
+		window.draw(rect);
 	}
 
 	window.display();
@@ -96,7 +108,6 @@ void Board::update() {
 				break;
 			}
 		}
-
 		pushToCells();
 		checkRow();
 		spawnGroup();
@@ -165,7 +176,8 @@ void Board::spawnGroup() {
 }
 
 void Board::addGroup(int type) {
-	currentGroup = new Group(shapes[type]);
+	currentGroup = nextGroup;//new Group(shapes[type]);
+	nextGroup = new Group(shapes[type]);
 }
 
 void Board::pushToCells() {
@@ -232,11 +244,35 @@ void Board::checkRow() {
 		count = 0;
 	}
 	if (combo > 0) {
-		score += (combo * 2);
+		score += (combo * 3);
 		// score *= combo;
 		std::cout << "[COMBO] Your score: " << score << std::endl;
 	}
 	else if (combo > -1){
 		std::cout << "Your score: " << score << std::endl;
+	}
+}
+
+void Board::setColor(Colors color) {
+	if (color == Colors::CYAN) {
+		rect.setFillColor(sf::Color(72, 232, 232));
+	}
+	else if (color == Colors::BLUE) {
+		rect.setFillColor(sf::Color(37, 79, 217));
+	}
+	else if (color == Colors::ORANGE) {
+		rect.setFillColor(sf::Color(245, 171, 30));
+	}
+	else if (color == Colors::YELLOW) {
+		rect.setFillColor(sf::Color(255, 226, 0));
+	}
+	else if (color == Colors::GREEN) {
+		rect.setFillColor(sf::Color(0, 209, 0));
+	}
+	else if (color == Colors::PURPLE) {
+		rect.setFillColor(sf::Color(199, 83, 199));
+	}
+	else if (color == Colors::RED) {
+		rect.setFillColor(sf::Color(214, 85, 62));
 	}
 }
