@@ -20,6 +20,10 @@ Board::Board(int width, int height) {
 	spawnGroup();
 }
 
+Board::~Board() {
+	delete nextGroup;
+}
+
 void Board::render(sf::RenderWindow &window) {
 	window.clear();
 	
