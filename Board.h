@@ -37,8 +37,10 @@ private:
 public:
 	bool running;
 	float cellSize;
+	
 	Board(int width, int height);
-
+	~Board();
+	
 	void render(sf::RenderWindow &window);
 	void update();
 	void moveGroup(int dir);
