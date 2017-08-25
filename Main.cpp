@@ -3,7 +3,7 @@
 
 int main(){
 	sf::RenderWindow window(sf::VideoMode(800, 600), "Tetris");
-	window.setKeyRepeatEnabled(false);
+	// window.setKeyRepeatEnabled(false);
 	window.setFramerateLimit(30);
 	
 	unsigned int ticks = 1;
@@ -16,6 +16,9 @@ int main(){
 			if (event.type == sf::Event::Closed) {
 				window.close();
 			}
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
+				window.close();
+			}
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
 				board->moveGroup(-1);
 				board->render(window);
@@ -24,11 +27,12 @@ int main(){
 				board->moveGroup(1);
 				board->render(window);
 			}
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
-				window.close();
-			}
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
 				board->rotate(1);
+				board->render(window);
+			}
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+				board->update();
 				board->render(window);
 			}
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && board->running == false) {
@@ -40,7 +44,7 @@ int main(){
 
 		//render
 		if (board->running) {
-			if (ticks % 150000 == 0) {
+			if (ticks % 170000 == 0) {
 				board->update();
 				board->render(window);
 				ticks = 0;
